@@ -1,0 +1,61 @@
+﻿@using MyMVC_2020.ViewModels
+@model CCtrl_DBAccess_Act_Index_VwMd
+
+@using (Html.BeginRouteForm("Default", new { controller = "DBAccess", action = "Index" }, FormMethod.Post, new { id = "form1" }))
+{
+    @Html.AntiForgeryToken()
+    @*@Html.TextBoxFor(x => x.account, new { @Value = @Model.account, id = "id_account", data_val = "true", data_val_required = "account欄位不可空白" })*@
+    <table>
+        <tr>
+            <td>ID: @Html.TextBoxFor(m => m.ID, new { @Value = Model.ID })</td>
+            <td>Name: @Html.TextBoxFor(m => m.Name, new { @Value = Model.Name })</td>
+        </tr>
+    </table>
+
+    <span>
+        <input type="submit" value="Btn_Add" name="Btn_Add" id="Btn_Add">
+    </span>
+    <span>
+        <input type="submit" value="Btn_Delete" name="Btn_Delete" id="Btn_Delete">
+    </span>
+    <span>
+        <input type="submit" value="Btn_Get" name="Btn_Get" id="Btn_Get">
+    </span>
+    <span>
+        <input type="submit" value="Btn_Update" name="Btn_Update" id="Btn_Update">
+    </span>
+}
+
+<hr>
+
+<div>
+    <table border="1">
+        <tr>
+            <td>id</td>
+            <td>name</td>
+        </tr>
+        @if (Model.List_CTbMember_DataModel != null)
+        {
+            foreach (MyMVC_2020.DataModels.CTbMember_DataModel list in Model.List_CTbMember_DataModel)
+            {
+                <tr>
+                    <td>@list.ID</td>
+                    <td>@list.Name</td>
+                </tr>
+            }
+        }
+    </table>
+</div>
+
+@section scripts
+{
+    @if (TempData["message"] != null)
+    {
+        <script type="text/javascript">
+            $(function () {
+            var message = @Html.Raw(Json.Encode(TempData["message"]));
+                Show_Toastr_MsgBox(message, '@TempData["message_type"]');
+            });
+        </script>
+    }
+}

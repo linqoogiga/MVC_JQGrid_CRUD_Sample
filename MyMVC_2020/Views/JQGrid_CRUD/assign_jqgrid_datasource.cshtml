@@ -1,0 +1,119 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+<link href="~/Content/jquery.jqGrid/ui.jqgrid.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-2.2.0.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.10.0.js"></script>
+<script src="~/Scripts/i18n/grid.locale-en.js"></script>
+<script src="~/Scripts/jquery-5.8.10.jqGrid.min.js"></script>
+
+<h2>assign_jqgrid_datasource</h2>
+ID:<input type="text" id="id">
+Name<input type="text" id="name">
+    <input type="button" id="btn_search" value="查詢" onclick="fetchGridData_V2()">
+
+<table id="jqGrid"></table>
+<div id="jqGridPager"></div>
+
+<script type="text/javascript">
+
+    $(function () {
+        $("#jqGrid").jqGrid({
+            colNames: ['ID', 'Name'],
+            //colModel takes the data from controller and binds to grid
+            colModel: [
+                { name: "ID", editable: false, key: true },//20250611_AM1134_By_John:要帶到正確的PrimatyKey到後端Controller/Action，同時又要ReadOnly不讓User修改到PrimaryKey。
+                {
+                    name: "Name", editable: true, editrules: { required: true }
+                }
+            ],
+
+            viewrecords: false, // show the current page, data rang and total records on the toolbar
+            width: 780,
+            height: '100%',
+          
+            rowNum: 5,
+            datatype: 'json',
+            pager: "#jqGridPager",
+            caption: "Load live data from ajax post",
+            emptyrecords: 'No records',
+            rowList: [5, 10, 20, 30, 40, 50],
+            
+        });
+
+        fetchGridData_V2();
+        $("#jqGrid").closest('.ui-jqgrid-bdiv').css('overflow-x', 'hidden');
+       
+        function formatTitle(cellValue, options, rowObject) {
+            return cellValue.substring(0, 50) + "...";
+        };
+
+        function formatLink(cellValue, options, rowObject) {
+            return "<a href='" + cellValue + "'>" + cellValue.substring(0, 25) + "..." + "</a>";
+        };
+
+    });
+
+    function fetchGridData_V2()
+    {
+        console.log('fetchGridData_V2()');
+        //===
+        var txt_id = $('input#id').val();
+        var txt_name = $('input#name').val();
+        //===
+        
+
+        $("#jqGrid").setGridParam({
+            url: '/JQGrid_CRUD/GetCustomers', 
+            page: 1,  //每次新的查詢，都會將分頁索引歸零到第1頁。
+            postData: {
+                id: txt_id,
+                name: txt_name                
+            }
+        }).trigger('reloadGrid');
+    }
+
+    /*
+    function fetchGridData() {
+        console.log('fetchGridData()');
+        //===
+        var txt_id = $('input#id').val();
+        var txt_name = $('input#name').val();
+        //===
+        var gridArrayData = [];
+        // show loading message
+        $("#jqGrid")[0].grid.beginReq();
+        $.ajax({
+            url: "/JQGrid_CRUD/GetCustomers",          
+            method: "post",
+            data: {
+                id: txt_id,
+                name: txt_name
+            },
+            dataType: "json",
+            success: function (result) {
+                for (var i = 0; i < result.rows.length; i++) {
+                    var item = result.rows[i];
+                    console.log(item.ID + ',' + item.Name);                    
+                    gridArrayData.push({
+                        ID: item.ID,
+                        Name: item.Name
+                    });
+                }
+                // set the new data
+                $("#jqGrid").jqGrid('setGridParam', { data: gridArrayData });
+                // hide the show message
+                $("#jqGrid")[0].grid.endReq();
+                // refresh the grid
+                $("#jqGrid").trigger('reloadGrid');
+            }
+        });
+    }
+    */
+
+
+
+</script>
