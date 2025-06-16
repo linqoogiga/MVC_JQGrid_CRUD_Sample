@@ -43,10 +43,81 @@ Name<input type="text" id="name">
             rowList: [5, 10, 20, 30, 40, 50],
             
         });
+        //===============
+        $("#jqGrid").navGrid('#jqGridPager',
+            {
+                edit: true,
+                add: true,
+                del: true,
+                search: false,
+                refresh: true,
+                closeAfterSearch: true
+            },
 
+            // options for the Edit Dialog
+            {
+                url: "/JQGrid_CRUD/Edit_Member",
+                editCaption: "The Edit Dialog",
+                recreateForm: true,
+                checkOnUpdate: true,
+                checkOnSubmit: true,
+                closeAfterEdit: true,
+                afterComplete: function (response) {
+                    if (response.responseJSON) {
+                        if (response.responseJSON == "success") {
+                            alert("Update Successfully");
+                        }
+                        else {
+                            alert("Update Fail");
+                        }
+                    }
+                },
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                }
+            },
+            // options for the Add Dialog
+            {
+                zIndex: 100,
+                url: "/JQGrid_CRUD/Add_Member",
+                closeOnEscape: true,
+                recreateForm: true,
+                closeAfterAdd: true,
+                afterComplete: function (response) {
+                    if (response.responseJSON) {
+                        if (response.responseJSON == "success") {
+                            alert("Save Successfully");
+                        }
+                    }
+                },
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                }
+            },
+            // options for the Delete Dailog
+            {
+                url: "/JQGrid_CRUD/Delete_Member",
+                closeOnEscape: true,
+                closeAfterDelete: true,
+                recreateForm: true,
+                msg: "你確定要刪除此會員嗎?",
+                afterComplete: function (response) {
+                    if (response.responseText) {
+                        alert("Delete Successfully");
+                    }
+                    else {
+                        alert('Delete失敗');
+                    }
+                },
+                errorTextFormat: function (data) {
+                    return 'Error: ' + data.responseText
+                }
+            }
+        );
+        //===============
         fetchGridData_V2();
         $("#jqGrid").closest('.ui-jqgrid-bdiv').css('overflow-x', 'hidden');
-       
+        //===============
         function formatTitle(cellValue, options, rowObject) {
             return cellValue.substring(0, 50) + "...";
         };

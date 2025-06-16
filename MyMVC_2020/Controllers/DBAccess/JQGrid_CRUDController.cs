@@ -122,16 +122,12 @@ namespace MyMVC_2020.Controllers.DBAccess
             //===
             if (Convert.ToInt64(Tp_Tuple.Item1) > 0 && Tp_Tuple.Item2 == string.Empty)
             {
-                string tmp_Msg = "Saved Successfully";
-                TempData["message_type"] = "success";
-                TempData["message"] = tmp_Msg;
+                string tmp_Msg = "success";                
                 return Json(tmp_Msg, JsonRequestBehavior.AllowGet);
             }
             else
             {
-                string tmp_ErrorMsg = "新增失敗:" + Tp_Tuple.Item2;
-                TempData["message_type"] = "error";
-                TempData["message"] = tmp_ErrorMsg;
+                string tmp_ErrorMsg = "新增失敗:" + Tp_Tuple.Item2;                
                 return Json(tmp_ErrorMsg, JsonRequestBehavior.AllowGet);
             }
         }
@@ -155,9 +151,7 @@ namespace MyMVC_2020.Controllers.DBAccess
             //===
             if (Convert.ToInt64(Tp_Tuple.Item1) > 0 && Tp_Tuple.Item2 == string.Empty)
             {
-                string tmp_Msg = "Update Successfully";
-                TempData["message_type"] = "success";
-                TempData["message"] = tmp_Msg;
+                string tmp_Msg = "success";                
                 return Json(tmp_Msg, JsonRequestBehavior.AllowGet);
             }
             else
@@ -185,16 +179,12 @@ namespace MyMVC_2020.Controllers.DBAccess
             //===
             if (Convert.ToInt64(Tp_Tuple.Item1) > 0 && Tp_Tuple.Item2 == string.Empty)
             {
-                string tmp_Msg = "Delete Successfully";
-                TempData["message_type"] = "success";
-                TempData["message"] = tmp_Msg;
+                string tmp_Msg = "success";                
                 return Json(tmp_Msg, JsonRequestBehavior.AllowGet);
             }
             else
             {
-                string tmp_ErrorMsg = "刪除失敗:" + Tp_Tuple.Item2;
-                TempData["message_type"] = "error";
-                TempData["message"] = tmp_ErrorMsg;
+                string tmp_ErrorMsg = "刪除失敗:" + Tp_Tuple.Item2;                
                 return Json(tmp_ErrorMsg, JsonRequestBehavior.AllowGet);
             }            
         }
