@@ -9,14 +9,19 @@
 <script src="~/Scripts/jquery-ui-1.10.0.js"></script>
 <script src="~/Scripts/i18n/grid.locale-en.js"></script>
 <script src="~/Scripts/jquery.jqGrid-5.8.10.min.js"></script>
+<!--要include jszip.min.js，JqGrid才能下載Excel-->
+<script src="~/Scripts/jszip.min.js"></script>
 
 <h2>assign_jqgrid_datasource</h2>
-ID:<input type="text" id="id">
-Name<input type="text" id="name">
-    <input type="button" id="btn_search" value="查詢" onclick="fetchGridData_V2()">
+ID:
+<input type="text" id="id">
+Name
+<input type="text" id="name">
+<input type="button" id="btn_search" value="查詢" onclick="fetchGridData_V2()">
 
 <table id="jqGrid"></table>
 <div id="jqGridPager"></div>
+<button id="export">Export to Excel</button>
 
 <script type="text/javascript">
 
@@ -34,14 +39,15 @@ Name<input type="text" id="name">
             viewrecords: false, // show the current page, data rang and total records on the toolbar
             width: 780,
             height: '100%',
-          
+
             rowNum: 5,
             datatype: 'json',
             pager: "#jqGridPager",
             caption: "Load live data from ajax post",
             emptyrecords: 'No records',
             rowList: [5, 10, 20, 30, 40, 50],
-            
+            //===
+            loadonce: true, //要有這句，JqGrid才能匯出Excel，但是分頁或排序，都無法自動Ajax+ReBind。
         });
         //===============
         $("#jqGrid").navGrid('#jqGridPager',
@@ -118,35 +124,36 @@ Name<input type="text" id="name">
         fetchGridData_V2();
         $("#jqGrid").closest('.ui-jqgrid-bdiv').css('overflow-x', 'hidden');
         //===============
-        function formatTitle(cellValue, options, rowObject) {
-            return cellValue.substring(0, 50) + "...";
-        };
-
-        function formatLink(cellValue, options, rowObject) {
-            return "<a href='" + cellValue + "'>" + cellValue.substring(0, 25) + "..." + "</a>";
-        };
-
     });
 
-    function fetchGridData_V2()
-    {
+    function fetchGridData_V2() {
         console.log('fetchGridData_V2()');
         //===
         var txt_id = $('input#id').val();
         var txt_name = $('input#name').val();
         //===
-        
+
 
         $("#jqGrid").setGridParam({
-            url: '/JQGrid_CRUD/GetCustomers', 
+            url: '/JQGrid_CRUD/GetCustomers',
             page: 1,  //每次新的查詢，都會將分頁索引歸零到第1頁。
             postData: {
                 id: txt_id,
-                name: txt_name                
+                name: txt_name
             }
         }).trigger('reloadGrid');
     }
 
+
+    $("#export").on("click", function () {
+        $("#jqGrid").jqGrid("exportToExcel", {
+            includeLabels: true,
+            includeGroupHeader: true,
+            includeFooter: true,
+            fileName: "jqGridExport.xlsx",
+            maxlength: 40 // maxlength for visible string data
+        })
+    })
     /*
     function fetchGridData() {
         console.log('fetchGridData()');
@@ -158,7 +165,7 @@ Name<input type="text" id="name">
         // show loading message
         $("#jqGrid")[0].grid.beginReq();
         $.ajax({
-            url: "/JQGrid_CRUD/GetCustomers",          
+            url: "/JQGrid_CRUD/GetCustomers",
             method: "post",
             data: {
                 id: txt_id,
@@ -168,7 +175,7 @@ Name<input type="text" id="name">
             success: function (result) {
                 for (var i = 0; i < result.rows.length; i++) {
                     var item = result.rows[i];
-                    console.log(item.ID + ',' + item.Name);                    
+                    console.log(item.ID + ',' + item.Name);
                     gridArrayData.push({
                         ID: item.ID,
                         Name: item.Name
